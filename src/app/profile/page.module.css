@@ -1,0 +1,292 @@
+/* .profileBackground {
+   background: linear-gradient(0deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%);
+   display: sticky;
+   position: absolute;
+   top:0;
+   left:0;
+} */
+
+.profileContainer {
+   margin: 0 auto;
+   width: 98%;
+   max-width: 768px;
+   height: 100svh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   --border-color: #f3f0ef;
+   --border: 1px solid var(--border-color);
+   --border-radius: 12px;
+   --element-background-color: #ffffff;
+   --element-inset-color: #ffffff;
+   --box-shadow-color: #f2f0ed;
+   --box-shadow: 0 0 20px var(--box-shadow-color)
+}
+
+/* .headerContainer {
+   border: var(--border);
+   width: 100%;
+   border-radius: var(--border-radius);
+   background-color: var(--element-background-color);
+} */
+
+.sectionContainer h1,
+.sectionContainer h2,
+.sectionContainer h3 {
+   font-family: var(--font-serif);
+   font-weight: 400;
+   
+   letter-spacing: -0.05em;
+}
+
+.sectionContainer h1 {
+   line-height: 0em;
+   font-size: 1em;
+   margin: 0em 0em -4em 0em;
+   
+}
+
+.listWrapper {
+   display: flex;
+   flex-direction: column;
+}
+
+.sectionContainer h2 {
+   font-size: 2em;
+   line-height: 0em;
+   margin: 1em 0em 1em 0em;
+   text-align: center;
+   font-style: italic;
+}
+
+.sectionContainer a {
+   text-decoration: none;
+}
+
+.sectionContainer {
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+   align-items: center;
+   width: 90%;
+   border: var(--border);
+   border-radius: var(--border-radius);
+   background-color: var(--element-inset-color);
+   margin: 0.5em;
+   isolation: isolate;
+   outline: 1px solid rgb(215, 210, 210);
+   box-shadow: var(--box-shadow)
+}
+
+.sectionContainer::before {
+   content: '';
+   position: absolute;
+   width: calc(100% - 2px);
+   height: calc(100% - 2px);
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   background-color: var(--background-color);
+   border-radius: calc(var(--border-radius) - 1px);
+   z-index: -1;
+}
+
+.roastContainer {
+   width: 95%;
+   padding: 1em;
+   display:inline;
+   font-family: var(--font-serif);
+   
+}
+
+
+.sectionContainer p {
+   word-wrap: break-word;
+   white-space: normal;
+   margin: 0em;
+   font-size: 1em;
+}
+
+
+.header {
+   font-style: italic;
+   font-size: 3em;
+   text-align: left;
+   line-height: 0em;
+   margin: 1em auto;
+   font-family: var(--font-serif);
+   
+   letter-spacing: -0.05em !important;
+}
+
+
+
+.names {
+   color: var(--text-color)
+}
+
+/* Remove or comment out your old .tracks, .artist, .track, .num styles */
+
+.listContainer {
+   --img-size: 100px;
+   display: flex;
+   flex-direction: column;
+   /* Stack list items vertically */
+   gap: 1rem;
+   /* Space between each list item */
+   width: 100%;
+   /* Take full width of its parent sectionContainer */
+   padding: 0rem 0rem 1rem 0.1rem;
+   min-height: fit-content;
+   /* Add some horizontal padding */
+}
+
+.listItem {
+   display: flex;
+   /* Align children (rank, image, name) horizontally */
+   align-items: center;
+   /* Vertically center align the children in the row */
+   gap: 1rem;
+   /* Space between rank, image, and name */
+   padding: 0.5rem 0;
+   /* Add some vertical padding to each item */
+   border-bottom: 1px solid var(--border-color, #eee);
+   /* Optional: separator line */
+}
+
+.listItem:last-child {
+   border-bottom: none;
+   /* Optional: remove border from the last item */
+}
+
+.listItemRank {
+   font-style: italic;
+   font-size: 1.2em;
+   min-width: 1.5em;
+   /* Give it some space so numbers align nicely */
+   text-align: right;
+   /* Align numbers to the right for neatness */
+   color: var(--text-color-secondary, #555);
+   font-family: var(--font-serif);
+}
+
+.listItemImageWrapper,
+.listItemImageWrapperSquare {
+   position: relative;
+   /* For the Next.js Image 'fill' prop */
+   flex-shrink: 0;
+   /* Prevent image from shrinking if name is long */
+}
+
+.listItemImageWrapper {
+   /* For circular artist images */
+   width: var(--img-size);
+   height: var(--img-size);
+   border-radius: 50%;
+   overflow: hidden;
+   background-color: #ccc;
+   /* Fallback background for the image */
+}
+
+.listItemImageWrapperSquare {
+   /* For square track images */
+   width: var(--img-size);
+   height: var(--img-size);
+   border-radius: 8px;
+   /* Slightly rounded corners for tracks */
+   overflow: hidden;
+   background-color: #ccc;
+   /* Fallback background for the image */
+}
+
+.listItemName {
+   font-size: 2em;
+   font-weight: 500;
+   color: var(--text-color, #333);
+   font-family: var(--font-serif);
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.listItemTextContainer {
+   display: flex;
+   flex-direction: column;
+   /* Stacks the track title and artist name vertically */
+   justify-content: center;
+   /* Helps with vertical alignment */
+   min-width: 0;
+}
+
+.trackTitle {
+   font-size: 2em;
+   font-weight: 500;
+   color: var(--text-color, #333);
+
+   /* Prevent long titles from wrapping awkwardly */
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   font-family: var(--font-serif);
+}
+
+/* Style for the artist name(s) */
+.artistName {
+   font-size: 1em;
+   /* Slightly smaller than the track title */
+   color: var(--text-color-secondary, #666);
+   /* Lighter color for hierarchy */
+   font-family: var(--font-sans);
+   /* Prevent long artist lists from wrapping */
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+
+}
+
+
+/* Your existing styles for .listContainer, .listItem, etc., remain above this */
+
+/* --- Add this block for smaller screens --- */
+@media (max-width: 600px) { /* Styles inside here apply to screens 600px wide or less */
+
+  .listContainer {
+    padding: 0 0.5rem; /* Reduce horizontal padding of the whole list */
+    gap: 0.75rem;   
+    --mobile-size: 80px /* Reduce gap between list items */
+  }
+
+  .listItem {
+    gap: 0.5rem;      /* Reduce gap between rank, image, and text within each item */
+    padding: 0.4rem 0; /* Slightly reduce vertical padding for each item */
+  }
+
+  .listItemRank {
+    font-size: 0.9em;
+    min-width: 1.5em;   /* Allow the rank number column to be narrower */
+    /* text-align: left; */ /* Optional: if right align takes too much space */
+  }
+
+  /* Adjust styles for both circular (artist) and square (track) image wrappers */
+  .listItemImageWrapper,
+  .listItemImageWrapperSquare {
+    width: var(--mobile-size);      /* Make images smaller */
+    height: var(--mobile-size);
+  }
+
+  .listItemTextContainer {
+    opacity: 1;
+  }
+
+  /* Assuming .listItemName is used for the artist name in the artist list */
+  .listItemName, 
+  .trackTitle {
+    font-size: 1.5em;   /* Make main text smaller */
+  }
+
+  /* For the artist name underneath the track title */
+  .artistName {
+    font-size: 0.8em;   /* Make secondary text even smaller */
+  }
+}

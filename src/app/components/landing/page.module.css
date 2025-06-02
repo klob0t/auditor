@@ -1,0 +1,45 @@
+.landingContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(10px, 8em, 11em);
+  font-style: italic;
+  letter-spacing: -0.1em;
+  margin-bottom: -0.2em;
+  color: var(--text-color);
+}
+
+.description {
+  font-family: var(--font-sans), sans;
+  font-size: 1em;
+  color: var(--text-color);
+}
+
+.loginButton {
+  width: 200px;
+  font-family: var(--font-sans), sans;
+  background-color: var(--text-color);
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin: 0.8em;
+  padding: 0.2em 0.5em;
+  border: 1px solid rgb(85, 85, 85);
+}
+
+.loginButton img {
+  padding-right: 0.5em;
+}
+
+.buttonText {
+  color: var(--background-color)
+}
