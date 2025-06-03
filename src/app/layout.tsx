@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Inter } from "next/font/google";
+import { Instrument_Serif, Inter, Miss_Fajardose } from "next/font/google";
 import "./globals.css";
 import { Providers } from '@/app/lib/providers'
 
@@ -17,6 +17,13 @@ const Sans = Inter({
   style: ['italic', 'normal']
 })
 
+const Cursive = Miss_Fajardose({
+  variable: '--font-cursive',
+  subsets: ['latin'],
+  weight: '400',
+  style: 'normal'
+})
+
 export const metadata: Metadata = {
   title: "Auditor",
   description: "The best Spotify profile rater",
@@ -29,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${Serif.variable} ${Sans.variable}`}>
+      <body className={`${Serif.variable} ${Sans.variable} ${Cursive.variable}`}>
         <Providers>
           {children}
         </Providers>

@@ -7,7 +7,7 @@ interface spinnerProps {
 }
 
 const Spinner: React.FC<spinnerProps> = ({ size = 44 }) => {
-   const ticks = Array.from(Array(12))
+   const ticks = Array.from(Array(8))
 
    return (
       <div
@@ -18,11 +18,11 @@ const Spinner: React.FC<spinnerProps> = ({ size = 44 }) => {
             <div
                key={i}
                className={styles.tickWrapper}
-               style={{ transform: `rotate(${i * 30}deg)`}}
+               style={{ transform: `rotate(${i * 360/8}deg)`}}
             >
                <div
                   className={styles.tick}
-                  style={{ animationDelay: `${-0.9167 + (i * 0.08333)}s` }}
+                  style={{ animationDelay: `${-1 + (i * 1/8)}s` }}
                />
             </div>
          ))}

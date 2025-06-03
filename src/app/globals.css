@@ -1,14 +1,20 @@
 :root {
-  --background-color: #fdfdfc;
-  --text-color: #211f1f;
+  --background-color: #ebe8e0;
+  --text-color: #332d26;
+  --text-color-light: #806f5b;
+  --border-color: #e5cd9c;
+  --border: 1px solid var(--border-color);
+  --border-radius: 12px;
+  --box-shadow-color: #c6b59c27;
 }
 
-body, html {
+body,
+html {
   width: 100vw;
   height: 100vh;
   height: 100svh;
   display: flex;
-  
+
   flex-grow: 1;
   flex-direction: column;
   background-color: var(--background-color);
@@ -19,11 +25,20 @@ body, html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body{
+body {
   height: 100%;
+  width: 100%;
+
 }
 
-h1, h2, h3 {
+html {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+h1,
+h2,
+h3 {
   padding: 0em;
   margin: 0;
   letter-spacing: -0.1em;
@@ -33,9 +48,9 @@ h1, h2, h3 {
   box-sizing: border-box;
 }
 
-html,
+/* html,
 body,
 body > div:first-child,
 div#__next {
   height: 100%;
-}
+} */

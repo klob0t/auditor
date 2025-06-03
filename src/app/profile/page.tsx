@@ -7,6 +7,7 @@ import Markdown from 'markdown-to-jsx'
 import Spinner from '@/app/components/spinner'
 import styles from './page.module.css'
 import Image from 'next/image'
+import Link from 'next/link'
 import { fetchSpotifyProfile, fetchTopSpotifyItems } from '@/app/lib/spotify'
 import { getRating } from '@/app/lib/payload'
 
@@ -31,6 +32,14 @@ interface Track {
    external_urls: { spotify: string }
 }
 
+interface User {
+   display_name: string
+   email: string
+   images: { url: string }[]
+   country?: string
+   external_urls: { spotify: string }
+}
+
 export default function ProfilePage() {
    const { data: session, status } = useSession()
    const router = useRouter()
@@ -43,41 +52,9 @@ export default function ProfilePage() {
    const [rating, setRating] = useState('')
    const [isRatingLoading, setIsRatingLoading] = useState(false)
 
-   const [userName, setUserName] = useState('')
+   const [user, setUser] = useState<User>()
 
    const captureRef = useRef<HTMLDivElement>(null)
-
-   // const fetchRating = async (tracks: Track[], artists: Artist[], username: string) => {
-   //    if (tracks.length === 0 && artists.length === 0) {
-   //       setRating('Not enough listening data to generate a rating. Please come back again after you listen to more music!')
-   //       return
-   //    }
-   //    setIsRatingLoading(true)
-   //    setRating('')
-
-   //    try {
-   //       const response = await fetch('/api/pollinations', {
-   //          method: 'POST',
-   //          headers: { 'Content-Type': 'application/json' },
-   //          body: JSON.stringify({
-   //             tracks,
-   //             artists,
-   //             username
-   //          }),
-   //       })
-   //       if (!response.ok) {
-   //          const errData = await response.json()
-   //          throw new Error(errData.error || "The server is under maintenance.")
-   //       }
-   //       const data = await response.json()
-   //       setRating(data.rating)
-   //    } catch (err: any) {
-   //       console.error('Error fetching the rating: ', err)
-   //       setRating(`Error generating the rating: ${err.message}`)
-   //    } finally {
-   //       setIsRatingLoading(false)
-   //    }
-   // }
 
    useEffect(() => {
       if (status === 'loading') {
@@ -101,18 +78,24 @@ export default function ProfilePage() {
             setError(null)
 
             const profileData = await fetchSpotifyProfile(session.accessToken)
-            setUserName(profileData.display_name)
 
             const [tracks, artists] = await Promise.all([
                fetchTopSpotifyItems(session.accessToken, 'tracks'),
                fetchTopSpotifyItems(session.accessToken, 'artists')
             ])
 
+            console.log(profileData)
+
             setTopTracks(tracks)
             setTopArtists(artists)
+            setUser(profileData)
 
             if (tracks.length > 0 || artists.length > 0) {
-               const ratingResult = await getRating(tracks, artists, profileData.display_name)
+               const ratingResult = await getRating(
+                  tracks,
+                  artists,
+                  profileData.display_name,
+                  'mean')
                setRating(ratingResult)
             } else {
                return setRating('Listening data is not enough to generate rating. Please come back again after you listen to more music!')
@@ -137,7 +120,7 @@ export default function ProfilePage() {
                alignItems: 'center',
                height: '100vh'
             }}>
-            <Spinner size={40} />
+            <Spinner size={70} />
          </div>
       )
    }
@@ -155,34 +138,46 @@ export default function ProfilePage() {
    return (
       <div className={styles.profileContainer}>
          <div className={styles.sectionContainer}>
-            <div className={styles.auditor}><span>The Auditor:</span></div>
+            {user ? (
+               <div className={styles.addressContainer}>
+                 <span>To:&nbsp;
+                  <Link href={user.external_urls.spotify} target='_blank' rel='The Auditor'>
+                     {user.display_name}</Link></span>
+                  <span>{user.email}</span>
+               </div>)
+               : (null)}
+            <div className={styles.hrWrapper}>
+               <hr className={styles.hr} />
+            </div>
             <div className={styles.roastContainer}>
                <Markdown>
                   {rating}
                </Markdown>
             </div>
-         </div>
-         <div className={styles.header}>
-            <div className={styles.hrWrapper}>
-               <hr className={styles.hr} />
-               <span className={styles.text}>Your Profile</span>
-               <hr className={styles.hr} />
+            <div className={styles.auditor}>
+            <span>Auditor</span>
+            <span>— The Auditor</span>
             </div>
          </div>
+         <div className={styles.hrWrapper}>
+               <hr className={styles.hr} />
+            </div>
          <div className={styles.sectionContainer}>
+         
             <h2>Top Artists</h2>
             <div className={styles.listContainer}>
                {topArtists.map((artist, i) => (
                   <div key={i} className={styles.listItem}>
-                     <span className={styles.listItemRank}>{i + 1}</span>
-                     <div className={styles.listItemImageWrapper}>
-                        <Image
-                           src={artist.images?.[0]?.url ?? TRANSPARENT_PLACEHOLDER}
-                           alt={`Profile picture for ${artist.name}`}
-                           fill
-                        />
-                     </div>
-                     <span className={styles.listItemName}>{artist.name}</span>
+                     <Link href={artist.external_urls.spotify} target='_blank' rel='The Auditor'>
+                        <span className={styles.listItemRank}>{i + 1}</span>
+                        <div className={styles.listItemImageWrapper}>
+                           <Image
+                              src={artist.images?.[0]?.url ?? TRANSPARENT_PLACEHOLDER}
+                              alt={`Profile picture for ${artist.name}`}
+                              fill
+                           />
+                        </div>
+                        <span className={styles.listItemName}>{artist.name}</span></Link>
                   </div>
                ))}
             </div>
@@ -192,20 +187,21 @@ export default function ProfilePage() {
             <div className={styles.listContainer}>
                {topTracks.map((track, i) => (
                   <div key={i} className={styles.listItem}>
-                     <span className={styles.listItemRank}>{i + 1}</span>
-                     <div className={styles.listItemImageWrapperSquare}>
-                        <Image
-                           src={track.album.images[0].url}
-                           alt={`Album art for ${track.name}`}
-                           fill
-                        />
-                     </div>
-                     <div className={styles.listItemTextContainer}>
-                        <span className={styles.trackTitle}>{track.name}</span>
-                        <span className={styles.artistName}>
-                           {track.artists.map(artist => artist.name).join(', ')}
-                        </span>
-                     </div>
+                     <Link href={track.external_urls.spotify} target='_blank' rel='The Auditor'>
+                        <span className={styles.listItemRank}>{i + 1}</span>
+                        <div className={styles.listItemImageWrapperSquare}>
+                           <Image
+                              src={track.album.images[0].url}
+                              alt={`Album art for ${track.name}`}
+                              fill
+                           />
+                        </div>
+                        <div className={styles.listItemTextContainer}>
+                           <span className={styles.trackTitle}>{track.name}</span>
+                           <span className={styles.artistName}>
+                              {track.artists.map(artist => artist.name).join(', ')}
+                           </span>
+                        </div></Link>
                   </div>
                ))}
             </div>
@@ -215,6 +211,7 @@ export default function ProfilePage() {
             <div className={styles.instagram}></div>
             <div className={styles.download}></div>
          </div>
+         <div className={styles.disclaimer}> <span>It's all just a joke. Music is subjective, and your taste is valid. Keep listening to whatever makes you feel good.</span><span>❤️‍🔥<Link href='https://klob0t.vercel.app'>klob0t</Link></span></div>
       </div>
    )
 }

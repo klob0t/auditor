@@ -13,6 +13,16 @@ export interface Track {
    external_urls: { spotify: string }
 }
 
+export interface User {
+  display_name: string | null
+  email?: string
+  id: string
+  images?: { url: string }[]
+  external_urls: { spotify: string }
+  country?: string
+}
+
+
 export async function fetchSpotifyProfile(accessToken: string) {
    const res = await fetch('https://api.spotify.com/v1/me', {
       headers: { Authorization: `Bearer ${accessToken}`}
@@ -21,14 +31,15 @@ export async function fetchSpotifyProfile(accessToken: string) {
    if (!res.ok) {
       throw new Error(`Failed to fetch Spotify profile. Status: ${res.status}`)
    }
+
    return res.json()
 }
 
 export async function fetchTopSpotifyItems(
    accessToken: string,
    type: 'tracks' | 'artists',
-   limit: number = 5,
-   time_range = 'medium_term'
+   limit: number = 10,
+   time_range = 'long_term'
 ) {
    const res = await fetch(`https://api.spotify.com/v1/me/top/${type}?time_range=${time_range}&limit=${limit}`, {
       headers: { Authorization: `Bearer ${accessToken}` }
@@ -49,6 +60,5 @@ export async function getUserSpotifyData(accessToken: string) {
       fetchTopSpotifyItems(accessToken, 'tracks'),
       fetchTopSpotifyItems(accessToken, 'artists')
    ])
-
    return { profileData, topTracks, topArtists}
 }

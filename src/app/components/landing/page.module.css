@@ -8,30 +8,50 @@
 }
 
 .title {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  margin: 0em 0em 1em 0em;
+}
+
+.title span:nth-of-type(2){
   font-family: var(--font-serif), serif;
-  font-size: clamp(10px, 8em, 11em);
+  font-size: 8em;
   font-style: italic;
   letter-spacing: -0.1em;
   margin-bottom: -0.2em;
   color: var(--text-color);
 }
 
+.title span:nth-of-type(1){
+  position:absolute;
+  font-family: var(--font-serif), serif;
+  letter-spacing: -0.1em;
+  font-style: italic;
+  font-size: 3em !important;
+  transform: translateX(1.4em) translateY(0.2em);
+}
+
 .description {
-  font-family: var(--font-sans), sans;
-  font-size: 1em;
+  font-family: var(--font-serif), sans;
+  font-size: 1.4em;
+  font-style: italic;
   color: var(--text-color);
+  text-align: center;
+  margin: 0em 0em 1em 0em;
 }
 
 .loginButton {
-  width: 200px;
+  width: max-content;
+  height: 2em;
   font-family: var(--font-sans), sans;
   background-color: var(--text-color);
   display: flex;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  margin: 0.8em;
+  border-radius: 20px;
+  margin: 0em 0em 0em 0em;
   padding: 0.2em 0.5em;
   border: 1px solid rgb(85, 85, 85);
 }

@@ -1,4 +1,4 @@
-import { buildRatingPayload } from "@/app/lib/payload"
+import { buildPayload } from "@/app/lib/payload"
 import { PerformSearch } from '@/app/api/searXNG/route'
 
 export async function POST(req: Request) {
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
    }
 
    try {
-      const { tracks, artists, username } = await req.json()
+      const { tracks, artists, username, mode } = await req.json()
 
       if (!tracks || !artists || !username) {
          return Response.json({ error: 'Missing data' }, { status: 400 })
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
       const topTracks = tracks.map((t: any) => t.name)
       const topArtists = artists.map((a: any) => a.name)
-      const payload = buildRatingPayload(topTracks, topArtists, username)
+      const payload = buildPayload(topTracks, topArtists, username, mode)
 
 
       const initialRes = await fetch('https://text.pollinations.ai/openai', {

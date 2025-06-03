@@ -1,18 +1,13 @@
 .profileContainer {
    margin: 1em auto;
    width: 98%;
-   max-width: 768px;
+   max-width: 800px;
    height: 100svh;
    display: flex;
    flex-direction: column;
    align-items: center;
-   --border-color: #f3f0ef;
-   --border: 1px solid var(--border-color);
-   --border-radius: 12px;
-   --element-background-color: #ffffff;
-   --element-inset-color: #ffffff;
-   --box-shadow-color: #f2f0ed;
-   --box-shadow: 0 0 20px var(--box-shadow-color)
+
+   --box-shadow: 0 0 30px var(--box-shadow-color)
 }
 
 .sectionContainer h1,
@@ -38,13 +33,74 @@
 .sectionContainer h2 {
    font-size: 3em;
    line-height: 0em;
-   margin: 1em 0em 1em 0em;
+   margin: 1.5em 0em 1em 0em;
    text-align: center;
    font-style: italic;
+   color: var(--text-color-light);
 }
 
 .sectionContainer a {
    text-decoration: none;
+}
+
+.addressContainer {
+   font-size: 2em;
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   margin: 1em 0em 1em 2em;
+   color: var(--text-color-light)
+}
+
+.addressContainer span {
+   font-family: var(--font-serif);
+}
+
+.addressContainer a {
+   color: var(--text-color);
+   text-decoration: underline dotted var(--text-color) 2px;
+   text-underline-offset: 3px;
+}
+
+.addressContainer>span:nth-of-type(2) {
+   font-family: var(--font-sans);
+   font-size: 0.5em;
+   color: var(--text-color-light)
+}
+
+.roastContainer {
+   width: 95%;
+   padding: 1em 0em 0em 1em;
+   margin: -2em 0em 0em 0em;
+   display: inline;
+   font-family: var(--font-serif);
+}
+
+.auditor {
+   width: 100%;
+   display: flex;
+   color: var(--text-color-light);
+   justify-self: flex-end;
+   flex-direction: column;
+   padding: 0em;
+   margin: 1em 8em 1em 0em
+}
+
+.auditor span {
+   font-family: var(--font-serif);
+   font-size: 2em;
+   font-style: italic;
+   font-weight: 400 !important;
+   text-align: right;
+   letter-spacing: -0.05em;
+   margin: -0.9em 0em 0em 0em;
+}
+
+.auditor>span:nth-of-type(1) {
+   font-family: var(--font-cursive);
+   margin: -0.2em 0em 0em 0em;
+   font-size: 6em;
+   letter-spacing: -0.02em;
 }
 
 .sectionContainer {
@@ -56,11 +112,11 @@
    width: 90%;
    border: var(--border);
    border-radius: var(--border-radius);
-   background-color: var(--element-inset-color);
-   margin: 0.5em;
+   background-color: white;
+   margin: 0em 0.5em 2em 0.5em;
    isolation: isolate;
-   outline: 1px solid rgb(215, 210, 210);
-   box-shadow: var(--box-shadow)
+   border: var(--border);
+   box-shadow: var(--box-shadow);
 }
 
 .sectionContainer::before {
@@ -74,73 +130,72 @@
    background-color: var(--background-color);
    border-radius: calc(var(--border-radius) - 1px);
    z-index: -1;
-}
-
-.profileContainer>.sectionContainer:nth-of-type(2) {
-   border: 5px solid pink
-}
-
-.roastContainer {
-   width: 95%;
-   padding: 1em;
-   display: inline;
-   font-family: var(--font-serif);
-
-}
-
-.auditor {
-   font-family: var(--font-serif);
-   font-size: 4em;
-   font-style: italic;
-   letter-spacing: -0.05em;
-   width: 100%;
-   margin: 0.5em 0em 0em 1em;
+   overflow: hidden;
 }
 
 .sectionContainer p {
    word-wrap: break-word;
    white-space: normal;
+   font-weight: 400 !important;
    margin: 0em 1em 0.5em 0em;
-   font-size: 2em;
-   font-style: italic;
-   text-indent: 1.5em
+   font-size: 1.7em;
+   text-indent: 1.5em;
+   letter-spacing: -0.01em;
+   font-family: var(--font-serif);
+   line-height: 1.4em;
+   color: var(--text-color)
 }
 
 .sectionContainer em {
-   text-decoration: underline wavy rgb(255, 34, 0) 1px
+   text-decoration: underline wavy #ff0026 1px;
+   font-style: italic;
+}
+
+.profileContainer>div:nth-of-type(3) {
+   margin-bottom: 0em !important;
+   box-shadow: 0px 0px 30px var(--box-shadow-color);
+   border-bottom-left-radius: 0px !important;
+   border-bottom-right-radius: 0px !important;
+}
+
+
+.profileContainer>div:nth-of-type(3)::before {
+   border-bottom-left-radius: 0px !important;
+   border-bottom-right-radius: 0px !important;
+}
+
+.profileContainer>div:nth-of-type(4) {
+   box-shadow: 0px 12px 30px var(--box-shadow-color);
+   margin-top: 0em;
+   border-top-left-radius: 0px;
+   border-top-right-radius: 0px;
+   border-top: 0;
+}
+
+.profileContainer>div:nth-of-type(4)::before {
+   border-top-left-radius: 0px !important;
+   border-top-right-radius: 0px !important;
 }
 
 .header {
-   font-style: italic;
+   /* font-style: italic; */
    font-size: 3em;
    text-align: left;
    line-height: 0em;
-   margin: 1em auto;
+   margin: 1em 0em 1em 0em;
    font-family: var(--font-serif);
    letter-spacing: -0.05em !important;
 }
 
 .hrWrapper {
+   margin: 0em 0em 2em 0em;
    display: flex;
-   align-items: center;
-   gap: 1rem;
+   width: 40%;
 }
 
 .hr {
-   flex: 1;
-   border: 1px;
-   border-top: 1px solid #ccc;
-   /* Or your desired color */
-}
-
-.listContainer {
-   --img-size: 100px;
-   display: grid;
-   flex-direction: repeat(2, 1fr);
-   gap: 1rem;
+   border-top: 2px solid #b2a5a5;
    width: 100%;
-   padding: 0rem 0rem 1rem 0.1rem;
-   min-height: fit-content;
 }
 
 .error {
@@ -168,39 +223,58 @@
 }
 
 .error button {
-   width: 200px;
+   width: max-content;
+   height: 2em;
    font-family: var(--font-sans), sans;
    background-color: var(--text-color);
    display: flex;
    cursor: pointer;
    align-items: center;
    justify-content: center;
-   border-radius: 10px;
+   border-radius: 20px;
    margin: 0.8em;
    padding: 0.2em 0.5em;
    border: 1px solid rgb(85, 85, 85);
 
 }
 
+.listContainer {
+   --img-size: 120px;
+   display: grid;
+   grid-template-rows: auto;
+   gap: 0rem;
+   width: 100%;
+   padding: 0rem 0rem 1rem 0.1rem;
+   min-height: fit-content;
+}
+
 .listItem {
    display: flex;
+   flex-grow: 1;
+   width: 100%;
    align-items: center;
-   gap: 1rem;
-   padding: 0.5rem 0;
-   border-bottom: 1px solid var(--border-color, #eee);
+   padding: 1em 1em 1em 0em;
+   border-bottom: 2px solid var(--border-color, #eee);
 }
 
 .listItem:last-child {
    border-bottom: none;
 }
 
+.listItem a {
+   width: 100%;
+   display: flex;
+   align-items: center;
+}
+
 .listItemRank {
-   font-style: italic;
-   font-size: 1.2em;
+   /* font-style: italic; */
+   font-size: 1.6em;
    min-width: 1.5em;
    text-align: right;
    color: var(--text-color-secondary, #555);
    font-family: var(--font-serif);
+   margin: 1em 1em 1em 0em;
 }
 
 .listItemImageWrapper,
@@ -218,7 +292,6 @@
 }
 
 .listItemImageWrapperSquare {
-   /* For square track images */
    width: var(--img-size);
    height: var(--img-size);
    border-radius: 8px;
@@ -226,14 +299,22 @@
    background-color: #ccc;
 }
 
+.listItemImageWrapper:hover,
+.listItemImageWrapperSquare:hover {
+   scale: 1.1;
+   transition: scale 500ms cubic-bezier(0.13, 0.88, 0.3, 1.01);
+   ;
+}
+
 .listItemName {
    font-size: 2em;
-   font-weight: 500;
-   color: var(--text-color, #333);
+   font-weight: 400;
+   color: var(--text-color);
    font-family: var(--font-serif);
    white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
+   margin: 1em 1em 1em 1em;
 }
 
 .listItemTextContainer {
@@ -241,12 +322,13 @@
    flex-direction: column;
    justify-content: center;
    min-width: 0;
+   margin: 1em 1em 1em 2em;
 }
 
 .trackTitle {
    font-size: 2em;
-   font-weight: 500;
-   color: var(--text-color, #333);
+   font-weight: 400;
+   color: var(--text-color);
    white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
@@ -255,7 +337,7 @@
 
 .artistName {
    font-size: 1em;
-   color: var(--text-color-secondary, #666);
+   color: var(--text-color-light);
    font-family: var(--font-sans);
    white-space: nowrap;
    overflow: hidden;
@@ -301,4 +383,32 @@
    .artistName {
       font-size: 0.8em;
    }
+}
+
+.disclaimer {
+   width: 80%;
+   min-width: 200px !important;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 0.5em 0em 1em 0em
+}
+
+.disclaimer a {
+   color: var(--text-color)
+}
+
+.disclaimer span {
+   text-align: center;
+   width: 100%;
+   font-family: var(--font-sans);
+   color: var(--text-color-secondary, #666);
+   font-size: 0.8em;
+   font-style: italic;
+   padding: 0em 0em 0.5em 0em;
+}
+
+.disclaimer span:nth-of-type(2) {
+   font-style: unset;
 }
