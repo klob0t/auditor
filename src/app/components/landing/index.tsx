@@ -1,7 +1,8 @@
+//@/app/components/landing/index.tsx
 'use client'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { use, useEffect } from 'react'
+import { useEffect } from 'react'
 import Image from 'next/image'
 import styles from './page.module.css'
 import Spinner from '@/app/components/spinner'

@@ -1,14 +1,20 @@
+//@/app/profile/index.tsx
 'use client'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Markdown from 'markdown-to-jsx'
 import Spinner from '@/app/components/spinner'
 import styles from './page.module.css'
 import Image from 'next/image'
-import Link from 'next/link'
+import { fetchSpotifyProfile, fetchTopSpotifyItems } from '@/app/lib/spotify'
+import { getRating } from '@/app/lib/payload'
 
 const TRANSPARENT_PLACEHOLDER =
    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+
+
+//*----Interfaces
 
 interface Artist {
    name: string
@@ -25,130 +31,151 @@ interface Track {
    external_urls: { spotify: string }
 }
 
-const mockTopArtists: Artist[] = [
-   { name: 'Tame Impala', external_urls: { spotify: '#' }, images: [{ url: 'https://placehold.co/300.png' }] },
-   { name: 'Kendrick Lamar', external_urls: { spotify: '#' }, images: [{ url: 'https://placehold.co/300.png' }] },
-   { name: 'Phoebe Bridgers', external_urls: { spotify: '#' }, images: [{ url: 'https://placehold.co/300.png' }] },
-   { name: 'Frank Ocean', external_urls: { spotify: '#' }, images: [{ url: 'https://placehold.co/300.png' }] },
-   { name: 'Radiohead', external_urls: { spotify: '#' }, images: [{ url: 'https://placehold.co/300.png' }] },
-]
-
-const mockTopTracks: Track[] = [
-   { name: 'Let It Happen', artists: [{ name: 'Tame Impala', external_urls: { spotify: '#' } }], album: { images: [{ url: 'https://placehold.co/300.png' }] }, external_urls: { spotify: '#' } },
-   { name: 'Money Trees', artists: [{ name: 'Kendrick Lamar', external_urls: { spotify: '#' } }], album: { images: [{ url: 'https://placehold.co/300.png' }] }, external_urls: { spotify: '#' } },
-   { name: 'Motion Sickness', artists: [{ name: 'Phoebe Bridgers', external_urls: { spotify: '#' } }], album: { images: [{ url: 'https://placehold.co/300.png' }] }, external_urls: { spotify: '#' } },
-   { name: 'Pyramids', artists: [{ name: 'Frank Ocean', external_urls: { spotify: '#' } }], album: { images: [{ url: 'https://placehold.co/300.png' }] }, external_urls: { spotify: '#' } },
-   { name: 'Weird Fishes/Arpeggi', artists: [{ name: 'Radiohead', external_urls: { spotify: '#' } }], album: { images: [{ url: 'https://placehold.co/300.png' }] }, external_urls: { spotify: '#' } },
-]
-
-
 export default function ProfilePage() {
-   // const { data: session, status } = useSession()
-   // const router = useRouter()
+   const { data: session, status } = useSession()
+   const router = useRouter()
 
-   // const [topTracks, setTopTracks] = useState<Track[]>([])
-   // const [topArtists, setTopArtists] = useState<Artist[]>([])
-   // const [isLoading, setIsLoading] = useState(true)
-   // const [error, setError] = useState<string | null>(null)
+   const [topTracks, setTopTracks] = useState<Track[]>([])
+   const [topArtists, setTopArtists] = useState<Artist[]>([])
+   const [isLoading, setIsLoading] = useState(true)
+   const [error, setError] = useState<string | null>(null)
 
-   // useEffect(() => {
-   //    if (status === 'loading') {
+   const [rating, setRating] = useState('')
+   const [isRatingLoading, setIsRatingLoading] = useState(false)
+
+   const [userName, setUserName] = useState('')
+
+   const captureRef = useRef<HTMLDivElement>(null)
+
+   // const fetchRating = async (tracks: Track[], artists: Artist[], username: string) => {
+   //    if (tracks.length === 0 && artists.length === 0) {
+   //       setRating('Not enough listening data to generate a rating. Please come back again after you listen to more music!')
    //       return
    //    }
+   //    setIsRatingLoading(true)
+   //    setRating('')
 
-   //    if (status === 'unauthenticated') {
-   //       router.push('/')
-   //       return
-   //    }
-
-   //    const getSpotifyData = async () => {
-   //       if (!session?.accessToken) return
-   //       setIsLoading(true)
-   //       setError(null)
-
-   //       try {
-   //          const fetchTopItems = async (type: 'tracks' | 'artists') => {
-   //             const response = await fetch(`https://api.spotify.com/v1/me/top/$${type}?time_range=medium_term&imit=10`, {
-   //                headers: {
-   //                   Authorization: `Bearer ${session.accessToken}`,
-   //                },
-   //             })
-
-   //             if (!response.ok) {
-   //                throw new Error(`Failed to fetch top ${type}. Status: ${response.status}`)
-   //             }
-   //             const data = await response.json()
-   //             return data.items
-   //          }
-
-   //          const [tracks, artists] = await Promise.all([
-   //             fetchTopItems('tracks'),
-   //             fetchTopItems('artists'),
-   //          ])
-
-   //          setTopTracks(tracks)
-   //          setTopArtists(artists)
-   //       } catch (err: any) {
-   //          console.error(err)
-   //          setError('Could not load your Spotify data. Please try logging in again.')
-   //       } finally {
-   //          setIsLoading(false)
+   //    try {
+   //       const response = await fetch('/api/pollinations', {
+   //          method: 'POST',
+   //          headers: { 'Content-Type': 'application/json' },
+   //          body: JSON.stringify({
+   //             tracks,
+   //             artists,
+   //             username
+   //          }),
+   //       })
+   //       if (!response.ok) {
+   //          const errData = await response.json()
+   //          throw new Error(errData.error || "The server is under maintenance.")
    //       }
+   //       const data = await response.json()
+   //       setRating(data.rating)
+   //    } catch (err: any) {
+   //       console.error('Error fetching the rating: ', err)
+   //       setRating(`Error generating the rating: ${err.message}`)
+   //    } finally {
+   //       setIsRatingLoading(false)
    //    }
-
-   //    getSpotifyData()
-   // }, [session, status, router])
-
-   // if (isLoading || status === 'loading') {
-   //    return (
-   //       <div
-   //          style={{
-   //             display: 'flex',
-   //             justifyContent: 'center',
-   //             alignItems: 'center',
-   //             height: '100vh'
-   //          }}>
-   //          <Spinner size={60} />
-   //       </div>
-   //    )
    // }
 
-   // if (error) {
-   //    return (
-   //       <div
-   //          style={{
-   //             textAlign: 'center',
-   //             paddingTop: '50px'
-   //          }}>
-   //          <h2>Something went wrong</h2>
-   //          <p>{error}</p>
-   //          <button onClick={() => signOut({ callbackUrl: '/' })}>Try log in again</button>
-   //       </div>
-   //    )
-   // }
+   useEffect(() => {
+      if (status === 'loading') {
+         return
+      }
+
+      if (status === 'unauthenticated') {
+         router.push('/')
+         return
+      }
+
+      const loadData = async () => {
+         if (!session?.accessToken) {
+            setError('Authentication issue: Access token missing. Please try signing in again.')
+            setIsLoading(false)
+            return
+         }
+
+         try {
+            setIsLoading(true)
+            setError(null)
+
+            const profileData = await fetchSpotifyProfile(session.accessToken)
+            setUserName(profileData.display_name)
+
+            const [tracks, artists] = await Promise.all([
+               fetchTopSpotifyItems(session.accessToken, 'tracks'),
+               fetchTopSpotifyItems(session.accessToken, 'artists')
+            ])
+
+            setTopTracks(tracks)
+            setTopArtists(artists)
+
+            if (tracks.length > 0 || artists.length > 0) {
+               const ratingResult = await getRating(tracks, artists, profileData.display_name)
+               setRating(ratingResult)
+            } else {
+               return setRating('Listening data is not enough to generate rating. Please come back again after you listen to more music!')
+            }
+         } catch (err: any) {
+            console.error(err)
+            setError('Could not load your Spotify data. Please try logging in again.')
+         } finally {
+            setIsLoading(false)
+         }
+      }
+
+      loadData()
+   }, [session, status, router])
+
+   if (isLoading || status === 'loading') {
+      return (
+         <div
+            style={{
+               display: 'flex',
+               justifyContent: 'center',
+               alignItems: 'center',
+               height: '100vh'
+            }}>
+            <Spinner size={40} />
+         </div>
+      )
+   }
+
+   if (error) {
+      return (
+         <div className={styles.error}>
+            <h2>Something went wrong</h2>
+            <p>{error}</p>
+            <button onClick={() => signOut({ callbackUrl: '/' })}>Try log in again</button>
+         </div>
+      )
+   }
 
    return (
-      <div className={styles.profileBackground}>
       <div className={styles.profileContainer}>
-          <div className={styles.header}>
-               <span>Airlangga,</span>
-            </div>
          <div className={styles.sectionContainer}>
+            <div className={styles.auditor}><span>The Auditor:</span></div>
             <div className={styles.roastContainer}>
-            <span className={styles.quote}>"</span>
-               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><span className={styles.quote}>"</span>
+               <Markdown>
+                  {rating}
+               </Markdown>
             </div>
          </div>
          <div className={styles.header}>
-               <span>Your Profile</span>
+            <div className={styles.hrWrapper}>
+               <hr className={styles.hr} />
+               <span className={styles.text}>Your Profile</span>
+               <hr className={styles.hr} />
             </div>
+         </div>
          <div className={styles.sectionContainer}>
             <h2>Top Artists</h2>
             <div className={styles.listContainer}>
-               {mockTopArtists.map((artist, i) => (
+               {topArtists.map((artist, i) => (
                   <div key={i} className={styles.listItem}>
                      <span className={styles.listItemRank}>{i + 1}</span>
-                     <div className={styles.listItemImageWrapper}> 
+                     <div className={styles.listItemImageWrapper}>
                         <Image
                            src={artist.images?.[0]?.url ?? TRANSPARENT_PLACEHOLDER}
                            alt={`Profile picture for ${artist.name}`}
@@ -163,7 +190,7 @@ export default function ProfilePage() {
          <div className={styles.sectionContainer}>
             <h2>Top Tracks</h2>
             <div className={styles.listContainer}>
-               {mockTopTracks.map((track, i) => (
+               {topTracks.map((track, i) => (
                   <div key={i} className={styles.listItem}>
                      <span className={styles.listItemRank}>{i + 1}</span>
                      <div className={styles.listItemImageWrapperSquare}>
@@ -174,11 +201,11 @@ export default function ProfilePage() {
                         />
                      </div>
                      <div className={styles.listItemTextContainer}>
-                <span className={styles.trackTitle}>{track.name}</span>
-                <span className={styles.artistName}>
-                    {track.artists.map(artist => artist.name).join(', ')}
-                </span>
-            </div>
+                        <span className={styles.trackTitle}>{track.name}</span>
+                        <span className={styles.artistName}>
+                           {track.artists.map(artist => artist.name).join(', ')}
+                        </span>
+                     </div>
                   </div>
                ))}
             </div>
@@ -188,7 +215,6 @@ export default function ProfilePage() {
             <div className={styles.instagram}></div>
             <div className={styles.download}></div>
          </div>
-      </div>
       </div>
    )
 }

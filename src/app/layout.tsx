@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from '@/app/utils/providers'
+import { Providers } from '@/app/lib/providers'
 
 const Serif = Instrument_Serif({
   variable: "--font-serif",

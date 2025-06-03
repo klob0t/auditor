@@ -1,3 +1,4 @@
+//@/app/components/spinner/index.tsx
 import React from 'react'
 import styles from './page.module.css'
 

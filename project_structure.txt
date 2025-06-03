@@ -16,10 +16,13 @@
 |       |   |-- auth
 |       |   |   `-- [...nextauth]
 |       |   |       `-- route.ts
-|       |   `-- pollinations
+|       |   `-- gemini
 |       |       `-- route.ts
 |       |-- components
-|       |   `-- landing
+|       |   |-- landing
+|       |   |   |-- index.tsx
+|       |   |   `-- page.module.css
+|       |   `-- spinner
 |       |       |-- index.tsx
 |       |       `-- page.module.css
 |       |-- favicon.ico
@@ -27,8 +30,11 @@
 |       |-- layout.tsx
 |       |-- page.module.css
 |       |-- page.tsx
+|       |-- profile
+|       |   |-- page.module.css
+|       |   `-- page.tsx
 |       `-- utils
-|           `-- providers.ts
+|           `-- providers.tsx
 `-- tsconfig.json
 
-11 directories, 20 files
+13 directories, 24 files

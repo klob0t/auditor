@@ -2,6 +2,7 @@ import NextAuth, { AuthOptions } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import SpotifyProvider from 'next-auth/providers/spotify'
 
+
 const spotifyScopes = [
    'user-read-email',
    'user-top-read',
@@ -32,7 +33,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
          ...token,
          accessToken: refreshedTokens.access_token,
          accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
-         refreshToken: refreshedTokens.refresh_token ?? token.RefreshToken,
+         refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
       }
    } catch (error) {
       console.error('Error refreshing access token', error)
@@ -48,7 +49,9 @@ export const authOptions: AuthOptions = {
       SpotifyProvider({
          clientId: process.env.SPOTIFY_CLIENT_ID as string,
          clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string,
-         authorization: `https://developer.spotify.com/documentation/web-api/tutorials/migration-insecure-redirect-uri{spotifyScopes}`,
+         authorization: {
+            params: { scope: spotifyScopes },
+         },
       }),
    ],
    secret: process.env.NEXTAUTH_SECRET as string,
@@ -63,8 +66,7 @@ export const authOptions: AuthOptions = {
                ...token,
             }
          }
-
-         if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
+         if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
             return token
          }
          return refreshAccessToken(token)
@@ -78,6 +80,7 @@ export const authOptions: AuthOptions = {
          return session
       },
    },
+   debug: true,
 }
 
 const handler = NextAuth(authOptions)
