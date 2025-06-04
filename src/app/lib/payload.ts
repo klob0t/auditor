@@ -1,4 +1,4 @@
-import { webSearchTool } from "@/app/lib/tools";
+import { webSearchTool, Tool } from "@/app/lib/tools";
 
 type AuditorMode = 'nice' | 'mean'
 
@@ -22,11 +22,29 @@ interface Message {
   content: string
 }
 
+// interface Tool {
+//    type: 'function'
+//    function: {
+//       name: string
+//       description: string
+//       parameters: {
+//          type: 'object'
+//          properties: {
+//             query: {
+//                type: 'string'
+//                description: 'string'
+//             }
+//          }
+//          required: string[]
+//       }
+//    }
+// }
+
 interface RatingPayload {
   model: string
   messages: Message[]
   stream: boolean
-  tools: any[]
+  tools: Tool[]
   tool_choice?: 'auto' | 'none' | { function: { name:string } }
 }
 
@@ -35,13 +53,13 @@ export function buildPayload(topTracks: string[], topArtists: string[], username
 
    const MEAN_SYSTEM_PROMPT = 
    `*PERSONA:
-   You're a sarcastic, witty, and brutally honest music critic with a prestigious name of "The Auditor". Your job is to make paragraphs of roast to people's Spotify taste in the most entertaining way possible. Be funny, clever, and offensive. Use methapor to describe the user music's taste. Be warm, nice, and welcoming at first but as the sentence goes, become more offensive! Be wild, be AS MEAN AS YOU COULD. 
+   You're a sarcastic, witty, and brutally honest music critic with a prestigious name of "The Auditor". Your job is to make 3 - 4 paragraphs of roast to people's Spotify taste in the most entertaining way possible. Be funny, clever, and offensive. Use methapor to describe the user music's taste. Be warm, nice, and welcoming at first but as the sentence goes, become more offensive! Be wild, be AS MEAN AS YOU COULD.
 
    *TOOL:
    You could get more real-time information from the internet using the available tool if you need. 
    
    *FORMAT:
-   Always answer with markdown format so you can put emphasize on mean words (You should always prefer to underline your word instead of bold to emphasize your answer). Always end your answer with 'no offense' or 'no hard feelings' or something along the line. Answer in informal English.`
+   Always answer with markdown format so you can put emphasize on mean words (You should ALWAYS UNDERLINE ON MEAN WORDS TO EMPHASIZE YOUR JUDGEMENT). Always end your answer with 'no offense' or 'no hard feelings' or something along the line. Answer in informal English.`
 
    const NICE_SYSTEM_PROMPT = 
    `*PERSONA:
@@ -89,15 +107,13 @@ export async function getRating(
    //    return 'Not enough listening data to generate a rating. Please come back again after you have listened more music.'
    // }
 
-   const topTracks = tracks.map(
-      (tracks, i) => `&{i + 1}. ${tracks.name} by ${tracks.artists.map(a => a.name).join(', ')}`
-   )
+   // const topTracks = tracks.map(
+   //    (tracks, i) => `&{i + 1}. ${tracks.name} by ${tracks.artists.map(a => a.name).join(', ')}`
+   // )
 
-   const topArtists = artists.map(
-      (artist, i) => `${i + 1}. ${artist.name}`
-   )
-
-   const payload = buildPayload(topTracks, topArtists, username, mode)
+   // const topArtists = artists.map(
+   //    (artist, i) => `${i + 1}. ${artist.name}`
+   // )
 
    try {
       const response = await fetch('/api/pollinations/', {
@@ -118,7 +134,7 @@ export async function getRating(
 
       const data = await response.json()
       return data.rating
-   } catch (err: any) {
+   } catch (err: unknown) {
       console.error('Error fetching rating from The Auditor', err)
       return `I am having a hiccup.`
    }

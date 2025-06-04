@@ -8,13 +8,11 @@ import Image from 'next/image'
 import styles from './page.module.css'
 import Spinner from '@/app/components/spinner'
 import Markdown from 'markdown-to-jsx'
-import { motion } from 'framer-motion'
 
 export default function LandingPage() {
-   const { data: session, status } = useSession()
+   const { status } = useSession()
    const router = useRouter()
    const [welcomeMsg, setWelcomeMsg] = useState<string>('')
-   const [showPage, setShowPage] = useState(false)
 
    useEffect(() => {
       if (status === 'authenticated') {
@@ -34,30 +32,12 @@ export default function LandingPage() {
       }
    }, [status])
 
-   const welcomeMessageVar = {
-      hidden: { opacity: 0 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2}}
-   }
 
-   if (!showPage || status === 'loading' || welcomeMsg === '') {
+   if (status === 'loading' || welcomeMsg === '') {
       return (
          <div className={styles.landingContainer}>
-            <motion.div
-               initial={{ scale: 1, rotate: 0, transformOrigin: 'center' }}
-               animate={{
-                  scale: welcomeMsg !== '' ? 0 : 1,
-                  rotate: welcomeMsg !== '' ? 1440 : 0
-               }}
-               transition={{
-                  duration: 0.5,
-                  ease: 'easeOut'
-               }}
-               onAnimationComplete={() => {
-                  if (welcomeMsg !== '') setShowPage(true)
-               }}
-            >
                <Spinner size={70} />
-            </motion.div></div>
+        </div>
       )
    }
 
@@ -68,13 +48,9 @@ export default function LandingPage() {
             <div className={styles.title}>
                <span>The</span>
                <span>Auditor</span></div>
-            <motion.div 
-               className={styles.description}
-               initial='hidden'
-               animate='visible'
-               variants={welcomeMessageVar}>
+            <div className={styles.description}>
                <Markdown>{welcomeMsg}</Markdown>
-            </motion.div>
+            </div>
             <div
                className={styles.loginButton}
                onClick={() => signIn('spotify', { callbackUrl: '/profile' })}

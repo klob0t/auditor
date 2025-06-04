@@ -25,8 +25,8 @@ const Cursive = Miss_Fajardose({
 })
 
 export const metadata: Metadata = {
-  title: "Auditor",
-  description: "The best Spotify profile rater",
+  title: "The Auditor",
+  description: "Internet's best music connoisseur",
 };
 
 export default function RootLayout({

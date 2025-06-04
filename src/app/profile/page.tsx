@@ -3,19 +3,20 @@
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
-import Markdown from 'markdown-to-jsx'
 import Spinner from '@/app/components/spinner'
 import styles from './page.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
 import { fetchSpotifyProfile, fetchTopSpotifyItems } from '@/app/lib/spotify'
 import { getRating } from '@/app/lib/payload'
+import { useTextAnimation, useSlideAnimation, useSpinAnimation } from '@/app/lib/hooks/animations'
+import Markdown from 'markdown-to-jsx'
 
 const TRANSPARENT_PLACEHOLDER =
    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 
 
-//*----Interfaces
+//*----Interfaces----
 
 interface Artist {
    name: string
@@ -41,6 +42,7 @@ interface User {
 }
 
 export default function ProfilePage() {
+   const container = useRef(null)
    const { data: session, status } = useSession()
    const router = useRouter()
 
@@ -50,11 +52,8 @@ export default function ProfilePage() {
    const [error, setError] = useState<string | null>(null)
 
    const [rating, setRating] = useState('')
-   const [isRatingLoading, setIsRatingLoading] = useState(false)
 
    const [user, setUser] = useState<User>()
-
-   const captureRef = useRef<HTMLDivElement>(null)
 
    useEffect(() => {
       if (status === 'loading') {
@@ -84,8 +83,6 @@ export default function ProfilePage() {
                fetchTopSpotifyItems(session.accessToken, 'artists')
             ])
 
-            console.log(profileData)
-
             setTopTracks(tracks)
             setTopArtists(artists)
             setUser(profileData)
@@ -100,7 +97,7 @@ export default function ProfilePage() {
             } else {
                return setRating('Listening data is not enough to generate rating. Please come back again after you listen to more music!')
             }
-         } catch (err: any) {
+         } catch (err: unknown) {
             console.error(err)
             setError('Could not load your Spotify data. Please try logging in again.')
          } finally {
@@ -110,6 +107,21 @@ export default function ProfilePage() {
 
       loadData()
    }, [session, status, router])
+
+   useTextAnimation({
+      selector: '#rating-text p',
+      delay: 0.4,
+      stagger: 0.02,
+      duration: 0.5,
+      trigger: rating,
+      scope: container
+   })
+
+   // useSpinAnimation({
+   //    target: #spinner,
+
+
+   // })
 
    if (isLoading || status === 'loading') {
       return (
@@ -136,82 +148,90 @@ export default function ProfilePage() {
    }
 
    return (
-      <div className={styles.profileContainer}>
-         <div className={styles.sectionContainer}>
-            {user ? (
-               <div className={styles.addressContainer}>
-                 <span>To:&nbsp;
-                  <Link href={user.external_urls.spotify} target='_blank' rel='The Auditor'>
-                     {user.display_name}</Link></span>
-                  <span>{user.email}</span>
-               </div>)
-               : (null)}
+      <>
+
+         <div className={styles.profileContainer} ref={container}>
+
+            <div className={styles.sectionContainer}>
+               {user ? (
+                  <div className={styles.addressContainer}>
+                     <span>To:&nbsp;
+                        <Link href={user.external_urls.spotify} target='_blank' rel='The Auditor'>
+                           {user.display_name}</Link></span>
+                     <span>{user.email}</span>
+                  </div>)
+                  : (null)}
+               <div className={styles.hrWrapper}>
+                  <hr className={styles.hr} />
+               </div>
+               <div className={styles.roastContainer}>
+                  <div id='rating-text'>
+                     <Markdown>
+                        {rating}
+                     </Markdown>
+                  </div>
+               </div>
+               <div className={styles.auditor}>
+                  <span>Auditor</span>
+                  <span>— The Auditor</span>
+               </div>
+            </div>
             <div className={styles.hrWrapper}>
                <hr className={styles.hr} />
             </div>
-            <div className={styles.roastContainer}>
-               <Markdown>
-                  {rating}
-               </Markdown>
-            </div>
-            <div className={styles.auditor}>
-            <span>Auditor</span>
-            <span>— The Auditor</span>
-            </div>
-         </div>
-         <div className={styles.hrWrapper}>
-               <hr className={styles.hr} />
-            </div>
-         <div className={styles.sectionContainer}>
-         
-            <h2>Top Artists</h2>
-            <div className={styles.listContainer}>
-               {topArtists.map((artist, i) => (
-                  <div key={i} className={styles.listItem}>
-                     <Link href={artist.external_urls.spotify} target='_blank' rel='The Auditor'>
-                        <span className={styles.listItemRank}>{i + 1}</span>
-                        <div className={styles.listItemImageWrapper}>
-                           <Image
-                              src={artist.images?.[0]?.url ?? TRANSPARENT_PLACEHOLDER}
-                              alt={`Profile picture for ${artist.name}`}
-                              fill
-                           />
-                        </div>
-                        <span className={styles.listItemName}>{artist.name}</span></Link>
-                  </div>
-               ))}
-            </div>
-         </div>
-         <div className={styles.sectionContainer}>
-            <h2>Top Tracks</h2>
-            <div className={styles.listContainer}>
-               {topTracks.map((track, i) => (
-                  <div key={i} className={styles.listItem}>
-                     <Link href={track.external_urls.spotify} target='_blank' rel='The Auditor'>
-                        <span className={styles.listItemRank}>{i + 1}</span>
-                        <div className={styles.listItemImageWrapperSquare}>
-                           <Image
-                              src={track.album.images[0].url}
-                              alt={`Album art for ${track.name}`}
-                              fill
-                           />
-                        </div>
-                        <div className={styles.listItemTextContainer}>
-                           <span className={styles.trackTitle}>{track.name}</span>
-                           <span className={styles.artistName}>
-                              {track.artists.map(artist => artist.name).join(', ')}
-                           </span>
-                        </div></Link>
-                  </div>
-               ))}
-            </div>
-         </div>
+            <div className={styles.sectionContainer}>
 
-         <div className={styles.shareButtons}>
-            <div className={styles.instagram}></div>
-            <div className={styles.download}></div>
-         </div>
-         <div className={styles.disclaimer}> <span>It's all just a joke. Music is subjective, and your taste is valid. Keep listening to whatever makes you feel good.</span><span>❤️‍🔥<Link href='https://klob0t.vercel.app'>klob0t</Link></span></div>
-      </div>
+               <h2>Top Artists</h2>
+               <div className={styles.listContainer}>
+                  {topArtists.map((artist, i) => (
+                     <div key={i} className={styles.listItem}>
+                        <Link href={artist.external_urls.spotify} target='_blank' rel='The Auditor'>
+                           <span className={styles.listItemRank}>{i + 1}</span>
+                           <div className={styles.listItemImageWrapper}>
+                              <Image
+                                 src={artist.images?.[0]?.url ?? TRANSPARENT_PLACEHOLDER}
+                                 alt={`Profile picture for ${artist.name}`}
+                                 fill
+                              />
+                           </div>
+                           <span className={styles.listItemName}>{artist.name}</span>
+                        </Link>
+                     </div>
+                  ))}
+               </div>
+            </div>
+            <div className={styles.sectionContainer}>
+               <h2>Top Tracks</h2>
+               <div className={styles.listContainer}>
+                  {topTracks.map((track, i) => (
+                     <div key={i} className={styles.listItem}>
+                        <Link href={track.external_urls.spotify} target='_blank' rel='The Auditor'>
+                           <span className={styles.listItemRank}>{i + 1}</span>
+                           <div className={styles.listItemImageWrapperSquare}>
+                              <Image
+                                 src={track.album.images[0].url}
+                                 alt={`Album art for ${track.name}`}
+                                 fill
+                              />
+                           </div>
+                           <div className={styles.listItemTextContainer}>
+                              <span className={styles.trackTitle}>{track.name}</span>
+                              <span className={styles.artistName}>
+                                 {track.artists.map(artist => artist.name).join(', ')}
+                              </span>
+                           </div></Link>
+                     </div>
+                  ))}
+               </div>
+            </div>
+
+            <div className={styles.shareButtons}>
+               <div className={styles.instagram}></div>
+               <div className={styles.download}></div>
+            </div>
+            <div className={styles.disclaimer}> <span>It&apos;s all just a joke. Music is subjective, and your taste is valid. Keep listening to whatever makes you feel good.</span><span>❤️‍🔥<Link href='https://klob0t.vercel.app'>klob0t</Link></span>
+            </div>
+            <div className={styles.gradient}></div>
+         </div></>
    )
 }

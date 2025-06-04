@@ -2,10 +2,11 @@
   --background-color: #ebe8e0;
   --text-color: #332d26;
   --text-color-light: #806f5b;
-  --border-color: #e5cd9c;
+  --border-color: #dfcaa2;
   --border: 1px solid var(--border-color);
   --border-radius: 12px;
   --box-shadow-color: #c6b59c27;
+  --box-shadow-color-image: #ab9577;
 }
 
 body,
@@ -19,7 +20,6 @@ html {
   flex-direction: column;
   background-color: var(--background-color);
   overflow-x: hidden;
-  margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,12 +28,15 @@ html {
 body {
   height: 100%;
   width: 100%;
-
+  margin: 0;
 }
 
 html {
-  overflow-y: auto;
-  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scrollbar-gutter: auto;
+  scrollbar-color: transparent transparent;
+  scrollbar-width: thin;
+  margin: 0 auto;
 }
 
 h1,

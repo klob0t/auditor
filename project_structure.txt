@@ -1,7 +1,7 @@
 .
 |-- README.md
+|-- TODO.txt
 |-- eslint.config.mjs
-|-- next-auth.d.ts
 |-- next-env.d.ts
 |-- next.config.ts
 |-- package-lock.json
@@ -11,30 +11,39 @@
 |   `-- images
 |       `-- Spotify_icon.svg
 |-- src
-|   `-- app
-|       |-- api
-|       |   |-- auth
-|       |   |   `-- [...nextauth]
-|       |   |       `-- route.ts
-|       |   `-- gemini
-|       |       `-- route.ts
-|       |-- components
-|       |   |-- landing
-|       |   |   |-- index.tsx
-|       |   |   `-- page.module.css
-|       |   `-- spinner
-|       |       |-- index.tsx
-|       |       `-- page.module.css
-|       |-- favicon.ico
-|       |-- globals.css
-|       |-- layout.tsx
-|       |-- page.module.css
-|       |-- page.tsx
-|       |-- profile
-|       |   |-- page.module.css
-|       |   `-- page.tsx
-|       `-- utils
-|           `-- providers.tsx
+|   |-- app
+|   |   |-- api
+|   |   |   |-- auth
+|   |   |   |   `-- [...nextauth]
+|   |   |   |       `-- route.ts
+|   |   |   |-- pollinations
+|   |   |   |   `-- route.ts
+|   |   |   `-- searXNG
+|   |   |       `-- route.ts
+|   |   |-- components
+|   |   |   |-- landing
+|   |   |   |   |-- index.tsx
+|   |   |   |   `-- page.module.css
+|   |   |   `-- spinner
+|   |   |       |-- index.tsx
+|   |   |       `-- page.module.css
+|   |   |-- favicon.ico
+|   |   |-- globals.css
+|   |   |-- layout.tsx
+|   |   |-- lib
+|   |   |   |-- payload.ts
+|   |   |   |-- providers.tsx
+|   |   |   |-- spotify.ts
+|   |   |   |-- textAnim.ts
+|   |   |   `-- tools.ts
+|   |   |-- page.module.css
+|   |   |-- page.tsx
+|   |   `-- profile
+|   |       |-- page.module.css
+|   |       `-- page.tsx
+|   `-- types
+|       |-- gsap.d.ts
+|       `-- next-auth.d.ts
 `-- tsconfig.json
 
-13 directories, 24 files
+15 directories, 31 files
