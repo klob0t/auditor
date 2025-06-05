@@ -3,14 +3,16 @@
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
-import Spinner from '@/app/components/spinner'
+
 import styles from './page.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
 import { fetchSpotifyProfile, fetchTopSpotifyItems } from '@/app/lib/spotify'
 import { getRating } from '@/app/lib/payload'
-import { useTextAnimation, useSlideAnimation, useSpinAnimation } from '@/app/lib/hooks/animations'
+import { useTextAnimation } from '@/app/lib/hooks/animations'
 import Markdown from 'markdown-to-jsx'
+
+import LoadingScreen from '@/app/components/loading'
 
 const TRANSPARENT_PLACEHOLDER =
    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
@@ -42,7 +44,7 @@ interface User {
 }
 
 export default function ProfilePage() {
-   const container = useRef(null)
+   const profileContainerRef = useRef<HTMLDivElement>(null)
    const { data: session, status } = useSession()
    const router = useRouter()
 
@@ -50,6 +52,8 @@ export default function ProfilePage() {
    const [topArtists, setTopArtists] = useState<Artist[]>([])
    const [isLoading, setIsLoading] = useState(true)
    const [error, setError] = useState<string | null>(null)
+   const [showPage, setShowPage] = useState(false)
+   const [loadingText, setLoadingText] = useState('Checking your Spotify...')
 
    const [rating, setRating] = useState('')
 
@@ -102,6 +106,7 @@ export default function ProfilePage() {
             setError('Could not load your Spotify data. Please try logging in again.')
          } finally {
             setIsLoading(false)
+            setLoadingText('Here you go...')
          }
       }
 
@@ -110,30 +115,20 @@ export default function ProfilePage() {
 
    useTextAnimation({
       selector: '#rating-text p',
-      delay: 0.4,
+      delay: 0,
       stagger: 0.02,
       duration: 0.5,
-      trigger: rating,
-      scope: container
+      trigger: showPage && rating ? rating : undefined,
+      scope: profileContainerRef
    })
 
-   // useSpinAnimation({
-   //    target: #spinner,
-
-
-   // })
-
-   if (isLoading || status === 'loading') {
+   if (!showPage || isLoading) {
       return (
-         <div
-            style={{
-               display: 'flex',
-               justifyContent: 'center',
-               alignItems: 'center',
-               height: '100vh'
-            }}>
-            <Spinner size={70} />
-         </div>
+         <LoadingScreen
+            trigger={!isLoading}
+            onExitComplete={() => setShowPage(true)}
+            loadingText={loadingText}
+             />
       )
    }
 
@@ -148,10 +143,14 @@ export default function ProfilePage() {
    }
 
    return (
-      <>
-
-         <div className={styles.profileContainer} ref={container}>
-
+         <div className={styles.profileContainer} ref={profileContainerRef}>
+         {!showPage && isLoading && (
+                     <LoadingScreen
+            trigger={!isLoading}
+            onExitComplete={() => setShowPage(true)}
+            loadingText='Checking your music taste...'
+             />
+         )}
             <div className={styles.sectionContainer}>
                {user ? (
                   <div className={styles.addressContainer}>
@@ -161,9 +160,7 @@ export default function ProfilePage() {
                      <span>{user.email}</span>
                   </div>)
                   : (null)}
-               <div className={styles.hrWrapper}>
-                  <hr className={styles.hr} />
-               </div>
+               <div className={styles.hrWrapper} />
                <div className={styles.roastContainer}>
                   <div id='rating-text'>
                      <Markdown>
@@ -176,11 +173,8 @@ export default function ProfilePage() {
                   <span>— The Auditor</span>
                </div>
             </div>
-            <div className={styles.hrWrapper}>
-               <hr className={styles.hr} />
-            </div>
+            <div className={styles.hrWrapper}/>
             <div className={styles.sectionContainer}>
-
                <h2>Top Artists</h2>
                <div className={styles.listContainer}>
                   {topArtists.map((artist, i) => (
@@ -224,7 +218,6 @@ export default function ProfilePage() {
                   ))}
                </div>
             </div>
-
             <div className={styles.shareButtons}>
                <div className={styles.instagram}></div>
                <div className={styles.download}></div>
@@ -232,6 +225,6 @@ export default function ProfilePage() {
             <div className={styles.disclaimer}> <span>It&apos;s all just a joke. Music is subjective, and your taste is valid. Keep listening to whatever makes you feel good.</span><span>❤️‍🔥<Link href='https://klob0t.vercel.app'>klob0t</Link></span>
             </div>
             <div className={styles.gradient}></div>
-         </div></>
+         </div>
    )
 }

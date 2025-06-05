@@ -8,7 +8,7 @@ import { RefObject } from 'react'
 
 gsap.registerPlugin(SplitText)
 
-interface UseTextAnimation {
+interface TextAnimationProps {
   selector: string
   delay?: number
   stagger?: number
@@ -24,15 +24,26 @@ export const useTextAnimation = ({
   duration,
   trigger,
   scope
-}: UseTextAnimation) => {
+}: TextAnimationProps) => {
   const splitRef = useRef<SplitText | null>(null)
+
 
   useGSAP(() => {
     if (!trigger) return
 
     const target = scope.current?.querySelectorAll(selector);
     if (!target) {
-        return;
+      return;
+    }
+
+    if (!scope.current) {
+      console.log("TextAnimation: Scope element is not available.");
+      return
+    }
+
+    if (target.length === 0) {
+      console.log(`TextAnimation: No elements found for selector "${selector}" within the provided scope.`);
+      return;
     }
 
     if (splitRef.current) {
@@ -43,124 +54,84 @@ export const useTextAnimation = ({
     splitRef.current = split
 
     if (split.words && split.words.length > 0) {
-      console.log(`characters found: ${selector}`)
-      gsap.from(split.words, {
+      gsap.fromTo(split.words, {
         opacity: 0,
+        visibility: 'visible',
         y: 5,
-        duration: (split.words.length * 0.02) * 0.1,
-        stagger,
-        delay,
+      }, {
+        opacity: 1,
+        y: 0,
+        duration: duration,
+        stagger: stagger,
+        delay: delay,
         ease: 'power3.out'
       })
     } else {
       console.log(`No characters found: ${selector}`)
     }
 
-  },{ 
+  }, {
     scope: scope,
     dependencies: [trigger, selector, delay, stagger, duration],
-    revertOnUpdate: true })
+    revertOnUpdate: true
+  })
 }
 
-interface UseSlideAnimationProps {
-  target: RefObject<HTMLElement | null>
-  play: boolean
-  direction: string
-  duration: number
-  ease: string
-  onComplete: () => void
-}
+export const useTextExitAnimation = ({
+  selector,
+  delay,
+  stagger,
+  duration,
+  trigger,
+  scope
+}: TextAnimationProps) => {
+  const splitRef = useRef<SplitText | null>(null)
 
-type AnimationProps = {
-  yPercent?: number;
-  xPercent?: number;
-};
 
-export const useSlideAnimation = ({
-  target,
-  play,
-  direction = 'up',
-  duration = 0.8,
-  ease = 'power2.inOut',
-  onComplete
-}: UseSlideAnimationProps) => {
   useGSAP(() => {
-    if (play && target.current) {
-      const animationProps : AnimationProps = {}
+    if (!trigger) return
 
-      switch (direction) {
-        case 'up':
-          animationProps.yPercent = -100
-          break
-        case 'down':
-          animationProps.yPercent = 100
-          break
-        case 'left':
-          animationProps.xPercent = -100
-          break
-        case 'right':
-          animationProps.xPercent = 100
-          break
-        default:
-          animationProps.yPercent = -100
-      }
-
-      gsap.to(target.current, {
-        ...animationProps,
-        duration: duration,
-        ease: ease,
-        onComplete: () => {
-          if (onComplete) {
-            onComplete()
-          }
-        }
-      })
+    const target = scope.current?.querySelectorAll(selector);
+    if (!target) {
+      return;
     }
-  }, {
-    dependencies: [target, play, direction, duration, ease, onComplete],
-    revertOnUpdate: true
-  })
-}
 
-interface UseSpinAnimationProps {
-  target: RefObject<HTMLElement | null>
-  play: boolean
-  duration: number
-  ease: string
-  onComplete: () => void
-}
+    if (!scope.current) {
+      console.log("TextAnimation: Scope element is not available.");
+      return
+    }
 
-export const useSpinAnimation = ({
-  target,
-  play,
-  duration = 0.8,
-  ease = 'power2.inOut',
-  onComplete
-}: UseSpinAnimationProps) => {
-  useGSAP(() => {
-    if (play && target.current) {
-      gsap.to(target.current, {
-        rotation: 1440,
-        scale: 0,
+    if (target.length === 0) {
+      console.log(`TextAnimation: No elements found for selector "${selector}" within the provided scope.`);
+      return;
+    }
+
+    if (splitRef.current) {
+      splitRef.current.revert()
+    }
+
+    const split = new SplitText(target, { type: 'words' })
+    splitRef.current = split
+
+    if (split.words && split.words.length > 0) {
+      gsap.fromTo(split.words, {
+        opacity: 1,
+        y: 0,
+      }, {
+        opacity: 0,
+        y: -5,
         duration: duration,
-        ease: ease,
-        onComplete: () => {
-          if (onComplete) {
-            onComplete()
-          }
-        }
+        stagger: stagger,
+        delay: delay,
+        ease: 'power3.out'
       })
-    } 
+    } else {
+      console.log(`No characters found: ${selector}`)
+    }
+
   }, {
-    dependencies: [target, play, duration, ease, onComplete],
+    scope: scope,
+    dependencies: [trigger, selector, delay, stagger, duration],
     revertOnUpdate: true
   })
 }
-
-// export const useImageAnimation = ({
-
-// }) => {
-//   useGSAP(() => {
-    
-//   })
-// }

@@ -33,7 +33,7 @@ body {
 
 html {
   scroll-behavior: smooth;
-  scrollbar-gutter: auto;
+  scrollbar-gutter: stable;
   scrollbar-color: transparent transparent;
   scrollbar-width: thin;
   margin: 0 auto;

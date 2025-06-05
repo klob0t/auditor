@@ -14,7 +14,7 @@
   margin: 0em 0em 1em 0em;
 }
 
-.title span:nth-of-type(2){
+.title span:nth-of-type(2) {
   font-family: var(--font-serif), serif;
   font-size: 8em;
   font-style: italic;
@@ -23,8 +23,8 @@
   color: var(--text-color);
 }
 
-.title span:nth-of-type(1){
-  position:absolute;
+.title span:nth-of-type(1) {
+  position: absolute;
   font-family: var(--font-serif), serif;
   letter-spacing: -0.1em;
   font-style: italic;
@@ -36,30 +36,56 @@
   font-family: var(--font-serif), sans;
   font-size: 1.4em;
   font-style: italic;
+  max-width: 60%;
   color: var(--text-color);
   text-align: center;
   margin: 0em 0em 1em 0em;
 }
 
 .loginButton {
+  --size: 3em;
   width: max-content;
-  height: 2em;
+  height: var(--size);
   font-family: var(--font-sans), sans;
   background-color: var(--text-color);
   display: flex;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: 100em;
   margin: 0em 0em 0em 0em;
-  padding: 0.2em 0.5em;
+  padding: 0em 0.8em 0em 0em;
   border: 1px solid rgb(85, 85, 85);
 }
 
-.loginButton img {
-  padding-right: 0.5em;
+.logoWrapper {
+  position: relative;
+  object-fit: contain;
+  width: calc(var(--size) - 0em);
+  height: calc(var(--size) - 1em);
+  margin: 1em 0em;
 }
 
 .buttonText {
   color: var(--background-color)
+}
+
+@media screen and (max-width: 600px) {
+  .loginButton {
+    --size: 3.5em;
+    width: max-content;
+    height: var(--size);
+    font-family: var(--font-sans), sans;
+    background-color: var(--text-color);
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100em;
+    margin: 0em 0em 0em 0em;
+    transform: translateY(200%);
+    padding: 0em 0.8em 0em 0em;
+    border: 1px solid rgb(85, 85, 85);
+  }
+
 }
